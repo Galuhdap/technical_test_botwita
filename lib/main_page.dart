@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:technical_test_borwita/data/datasource/auth/auth_local_datasource.dart';
 import 'package:technical_test_borwita/data/datasource/auth/auth_remote_datasource.dart';
+import 'package:technical_test_borwita/data/datasource/product/product_remote_datasource.dart';
 import 'package:technical_test_borwita/data/repository/auth/auth_repository.dart';
+import 'package:technical_test_borwita/data/repository/product/product_repository.dart';
 import 'package:technical_test_borwita/presentations/auth/login/bloc/login_bloc.dart';
 import 'package:technical_test_borwita/presentations/auth/login/page/login_page.dart';
+import 'package:technical_test_borwita/presentations/product/bloc/product_bloc.dart';
 import 'package:technical_test_borwita/presentations/splash/cubit/splash_cubit.dart';
 import 'package:technical_test_borwita/presentations/splash/page/splash_page.dart';
 
@@ -26,8 +29,13 @@ class MainPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => SplashCubit()),
+        BlocProvider(create: (_) => SplashCubit(authLocalDatasource)),
         BlocProvider<LoginBloc>(create: (context) => LoginBloc(authRepository)),
+        BlocProvider(
+          create: (context) =>
+              ProductBloc(ProductRepository(ProductRemoteDatasource()))
+                ..add(const ProductEvent.getProducts()),
+        ),
       ],
       child: MaterialApp(
         color: Colors.white,
